@@ -7,8 +7,10 @@
   "scripts": {
     "typedoc": "typedoc ./src --out ./docs --readme README.md && nodetouch ./docs/.nojekyll",
     "test": "jest",
-    "webpack": "webpack",
-    "build": "tsc && npm run typedoc && webpack"
+    "webpack": "webpack --mode production",
+    "build": "tsc && tsc -p tsconfig.es2016.json && npm run typedoc && webpack --mode production",
+    "lint": "tslint -p ./",
+    "lint:fix": "tslint -p ./ --fix"
   },
   "keywords": [
     "webgl"
@@ -27,13 +29,16 @@
     "email": "kotofurumiya@gmail.com"
   },
   "devDependencies": {
-    "@types/jest": "^22.1.2",
-    "@types/webgl2": "0.0.2",
-    "jest": "^22.2.2",
+    "@types/jest": "^22.2.3",
+    "@types/webgl2": "0.0.3",
+    "jest": "^22.4.3",
     "touch": "^3.1.0",
-    "ts-jest": "^22.0.3",
-    "typedoc": "^0.10.0",
-    "typescript": "^2.7.1",
-    "webpack": "^3.10.0"
+    "ts-jest": "^22.4.2",
+    "tslint": "^5.9.1",
+    "tslint-config-airbnb": "^5.8.0",
+    "typedoc": "^0.11.1",
+    "typescript": "^2.8.1",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
   }
 }

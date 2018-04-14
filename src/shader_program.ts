@@ -23,7 +23,7 @@ export abstract class ShaderBase {
     context.compileShader(shader);
 
     const compileStatus = context.getShaderParameter(shader, context.COMPILE_STATUS);
-    if(!compileStatus) {
+    if (!compileStatus) {
       const info = <string>context.getShaderInfoLog(shader);
       throw new Error(info);
     }
@@ -47,7 +47,7 @@ export abstract class ShaderBase {
    * @returns {WebGLShader}
    */
   get glShader(): WebGLShader {
-    if(!this._glShader === null) {
+    if (!this._glShader === null) {
       throw new Error('This shader is not compiled yet.');
     }
 
@@ -60,7 +60,7 @@ export abstract class ShaderBase {
  */
 export class VertexShader extends ShaderBase {
   constructor(source: string) {
-   super(source, VERTEX_SHADER);
+    super(source, VERTEX_SHADER);
   }
 }
 
@@ -140,18 +140,18 @@ export class Program {
    * @param {Buffer} buffer
    */
   addBuffer(buffer: Buffer): void {
-    if(buffer.bufferType === ELEMENT_ARRAY_BUFFER) {
+    if (buffer.bufferType === ELEMENT_ARRAY_BUFFER) {
       this._currentIndexBuffer = <ElementArrayBuffer>buffer;
     }
 
-    if(this.isLinked) {
+    if (this.isLinked) {
       buffer._initOnce(<WebGL2RenderingContext>this._glContext, <WebGLProgram>this._glProgram);
-      if(buffer.bufferType === ELEMENT_ARRAY_BUFFER && this._glContext !== null) {
+      if (buffer.bufferType === ELEMENT_ARRAY_BUFFER && this._glContext !== null) {
         this._glContext.bindBuffer(ELEMENT_ARRAY_BUFFER, buffer.glBuffer);
       }
       this._initializedBuffers.push(buffer);
     } else {
-      if(buffer.isInitialized) {
+      if (buffer.isInitialized) {
         this._initializedBuffers.push(buffer);
       } else {
         this._uninitializedBuffers.push(buffer);
@@ -166,7 +166,7 @@ export class Program {
   activateElementArrayBuffer(buffer: ElementArrayBuffer) {
     this._currentIndexBuffer = buffer;
 
-    if(this.isLinked && this._glContext !== null) {
+    if (this.isLinked && this._glContext !== null) {
       this._glContext.bindBuffer(ELEMENT_ARRAY_BUFFER, buffer.glBuffer);
     }
   }
@@ -176,7 +176,7 @@ export class Program {
    * @param {Uniform} uniform
    */
   addUniform(uniform: Uniform): void {
-    if(this.isLinked) {
+    if (this.isLinked) {
       uniform._init(<WebGL2RenderingContext>this._glContext, <WebGLProgram>this._glProgram);
       this._initializedUniforms.push(uniform);
     } else {
@@ -189,7 +189,7 @@ export class Program {
    * @param {VertexArrayObject} vao
    */
   addVertexArrayObject(vao: VertexArrayObject): void {
-    if(this.isLinked) {
+    if (this.isLinked) {
       vao._init(<WebGL2RenderingContext>this._glContext, <WebGLProgram>this._glProgram);
       this._initializedVertexArrayObjects.push(vao);
       this._initializedBuffers.push(vao.buffer);
@@ -204,7 +204,7 @@ export class Program {
    */
   activateVertexArrayObject(vao: VertexArrayObject): void {
     this._currentVertexArrayObject = vao;
-    if(this.isLinked) {
+    if (this.isLinked) {
       const context = <WebGL2RenderingContext>this._glContext;
       context.bindVertexArray(vao.glVertexArrayObject);
     }
@@ -215,7 +215,7 @@ export class Program {
    * @param {UniformBufferObject} ubo
    */
   addUniformBufferObject(ubo: UniformBufferObject) {
-    if(this.isLinked) {
+    if (this.isLinked) {
       const index = this._initializedUniformBufferObjects.length;
       ubo._init(<WebGL2RenderingContext>this._glContext, <WebGLProgram>this._glProgram, index);
       this._initializedUniformBufferObjects.push(ubo);
@@ -230,10 +230,10 @@ export class Program {
    * @param {number | null} count
    */
   draw(mode: number, count: number | null = null): void {
-    if(this._glContext !== null) {
-      if(this._currentIndexBuffer !== null && this._currentIndexBuffer.data !== null) {
+    if (this._glContext !== null) {
+      if (this._currentIndexBuffer !== null && this._currentIndexBuffer.data !== null) {
         this._glContext.drawElements(mode, this._currentIndexBuffer.data.length, this._currentIndexBuffer.dataType, 0);
-      } else if(this._initializedBuffers.length > 0){
+      } else if (this._initializedBuffers.length > 0) {
         const c = (count !== null) ? count : this._initializedBuffers[0].dataCount;
         this._glContext.drawArrays(mode, 0, c);
       }
@@ -241,11 +241,11 @@ export class Program {
   }
 
   activate(): void {
-    this._initializedBuffers.forEach((b) => b.activate());
+    this._initializedBuffers.forEach((b: Buffer) => b.activate());
   }
 
   deactivate(): void {
-    this._initializedBuffers.forEach((b) => b.deactivate());
+    this._initializedBuffers.forEach((b: Buffer) => b.deactivate());
   }
 
   /**
@@ -263,14 +263,14 @@ export class Program {
     context.attachShader(program, this._vertexShader.glShader);
     context.attachShader(program, this._fragmentShader.glShader);
 
-    if(this._feedbackVaryings.length > 0) {
+    if (this._feedbackVaryings.length > 0) {
       context.transformFeedbackVaryings(program, this._feedbackVaryings, this._feedbackBufferMode);
     }
 
     context.linkProgram(program);
 
     const linkStatus = context.getProgramParameter(program, context.LINK_STATUS);
-    if(!linkStatus) {
+    if (!linkStatus) {
       const info = <string>context.getProgramInfoLog(program);
       throw new Error(info);
     }
@@ -281,40 +281,40 @@ export class Program {
 
     // initialize buffers.
     let buffer = null;
-    while(buffer = this._uninitializedBuffers.shift()) {
+    while (buffer = this._uninitializedBuffers.shift()) {
       buffer._init(context, program);
-      if(buffer.bufferType === ELEMENT_ARRAY_BUFFER && this._currentIndexBuffer === null) {
+      if (buffer.bufferType === ELEMENT_ARRAY_BUFFER && this._currentIndexBuffer === null) {
         this._currentIndexBuffer = <ElementArrayBuffer>buffer;
       }
       this._initializedBuffers.push(buffer);
     }
 
-    if(this._currentIndexBuffer !== null) {
+    if (this._currentIndexBuffer !== null) {
       context.bindBuffer(ELEMENT_ARRAY_BUFFER, this._currentIndexBuffer);
     }
 
     // initialize uniforms.
     let uniform = null;
-    while(uniform = this._uninitializedUniforms.shift()) {
+    while (uniform = this._uninitializedUniforms.shift()) {
       uniform._init(context, program);
       this._initializedUniforms.push(uniform);
     }
 
     // initialize VertexArrayObjects.
     let vao = null;
-    while(vao = this._uninitializedVertexArrayObject.shift()) {
+    while (vao = this._uninitializedVertexArrayObject.shift()) {
       vao._init(context, program);
       this._initializedVertexArrayObjects.push(vao);
       this._initializedBuffers.push(vao.buffer);
     }
 
-    if(this._currentVertexArrayObject !== null) {
+    if (this._currentVertexArrayObject !== null) {
       context.bindVertexArray(this._currentVertexArrayObject.glVertexArrayObject);
     }
 
     // initialize UniformBufferObjects
     let ubo = null;
-    while(ubo = this._uninitializedUniformBufferObjects.shift()) {
+    while (ubo = this._uninitializedUniformBufferObjects.shift()) {
       const index = this._initializedUniformBufferObjects.length;
       ubo._init(context, program, index);
       this._initializedUniformBufferObjects.push(ubo);
@@ -335,7 +335,7 @@ export class Program {
    * @returns {WebGLProgram}
    */
   get glProgram(): WebGLProgram {
-    if(this._glProgram === null) {
+    if (this._glProgram === null) {
       throw new Error(`This program is not linked yet.`);
     }
 

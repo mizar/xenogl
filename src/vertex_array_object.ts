@@ -16,7 +16,7 @@ export class VertexArrayObject {
 
   constructor(buffer: Buffer, options: {
     dataOrLength?: TypedArrayLike | number,
-    attributes?: Attribute[]
+    attributes?: Attribute[],
   } = {}) {
     this._buffer = buffer;
     this._glContext = null;
@@ -24,7 +24,7 @@ export class VertexArrayObject {
     this._enabledAttributes = ('attributes' in options) ? <Attribute[] | null>options.attributes : null;
     this._mustWriteData = 'dataOrLength' in options;
 
-    if(this._mustWriteData) {
+    if (this._mustWriteData) {
       this._dataOrLength = options.dataOrLength;
     }
 
@@ -39,7 +39,7 @@ export class VertexArrayObject {
    * @private
    */
   _init(context: WebGL2RenderingContext, program: WebGLProgram) {
-    if(this._mustWriteData) {
+    if (this._mustWriteData) {
       this._buffer.bufferData(<TypedArrayLike>this._dataOrLength);
     }
 
@@ -67,10 +67,9 @@ export class VertexArrayObject {
    * @returns {WebGLVertexArrayObject}
    */
   get glVertexArrayObject(): WebGLVertexArrayObject {
-    if(this._isInitialized) {
+    if (this._isInitialized) {
       return <WebGLVertexArrayObject>this._glVertexArrayObject;
-    } else {
-      throw new Error('This vertex array object is not added to any program yet.');
     }
+    throw new Error('This vertex array object is not added to any program yet.');
   }
 }

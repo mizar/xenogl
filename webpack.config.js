@@ -2,15 +2,17 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './lib/index.js',
+  entry: {
+    'xenogl': './lib/index.js',
+    'xenogl.es2016': './lib.es2016/index.js',
+  },
   output: {
-    filename: 'xenogl.min.js',
+    filename: '[name].min.js',
     path: path.resolve('build'),
-    library: "XenoGL",
-    libraryTarget: "window",
+    library: 'XenoGL',
+    libraryTarget: 'window',
   },
   plugins: [
     new webpack.DefinePlugin({'process.env': { NODE_ENV: JSON.stringify('production') }}),
-    new webpack.optimize.UglifyJsPlugin()
-  ]
+  ],
 };

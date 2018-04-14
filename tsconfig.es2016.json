@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "outDir": "lib",
+    "target": "es2016",
+    "module": "es2015",
+    "outDir": "lib.es2016",
     "newLine": "LF",
     "sourceMap": false,
     "declaration": true,

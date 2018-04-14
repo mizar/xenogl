@@ -51,7 +51,7 @@ export class Uniform {
    * @param {number} type
    */
   setValue(value: number, type: number) {
-    if(type === FLOAT) {
+    if (type === FLOAT) {
       this._flushData = (context: WebGL2RenderingContext, location: WebGLUniformLocation) => {
         context.uniform1f(location, value);
       };
@@ -76,13 +76,13 @@ export class Uniform {
   setVector(value: TypedArrayLike, type: number) {
     const length = value.length;
 
-    if(length === 1) {
+    if (length === 1) {
       this.setVector1(value, type);
-    } else if(length === 2) {
+    } else if (length === 2) {
       this.setVector2(value, type);
-    } else if(length === 3) {
+    } else if (length === 3) {
       this.setVector3(value, type);
-    } else if(length === 4) {
+    } else if (length === 4) {
       this.setVector4(value, type);
     } else {
       throw new Error(`Length of value must be 1, 2, 3 or 4. Your value length is ${length}`);
@@ -90,7 +90,7 @@ export class Uniform {
   }
 
   setVector1(value: TypedArrayLike, type: number) {
-    if(type === FLOAT) {
+    if (type === FLOAT) {
       this._flushData = (context: WebGL2RenderingContext, location: WebGLUniformLocation) => {
         context.uniform1fv(location, <Float32Array>value);
       };
@@ -108,7 +108,7 @@ export class Uniform {
   }
 
   setVector2(value: TypedArrayLike, type: number) {
-    if(type === FLOAT) {
+    if (type === FLOAT) {
       this._flushData = (context: WebGL2RenderingContext, location: WebGLUniformLocation) => {
         context.uniform2fv(location, <Float32Array>value);
       };
@@ -126,7 +126,7 @@ export class Uniform {
   }
 
   setVector3(value: TypedArrayLike, type: number) {
-    if(type === FLOAT) {
+    if (type === FLOAT) {
       this._flushData = (context: WebGL2RenderingContext, location: WebGLUniformLocation) => {
         context.uniform3fv(location, <Float32Array>value);
       };
@@ -144,7 +144,7 @@ export class Uniform {
   }
 
   setVector4(value: TypedArrayLike, type: number) {
-    if(type === FLOAT) {
+    if (type === FLOAT) {
       this._flushData = (context: WebGL2RenderingContext, location: WebGLUniformLocation) => {
         context.uniform4fv(location, <Float32Array>value);
       };
@@ -167,11 +167,11 @@ export class Uniform {
    */
   setMatrix(value: Float32Array) {
     const size = value.length;
-    if(size === 4) {
+    if (size === 4) {
       this.setMatrix2(value);
-    } else if(size === 9) {
+    } else if (size === 9) {
       this.setMatrix3(value);
-    } else if(size === 16) {
+    } else if (size === 16) {
       this.setMatrix4(value);
     } else {
       throw new Error(`Failed to detect size of the matrix. If you use a non-square matrix, use setMatrixNxN instead.`);
@@ -203,7 +203,7 @@ export class Uniform {
   }
 
   _flush() {
-    if(this.isLocated && this._glContext !== null) {
+    if (this.isLocated && this._glContext !== null) {
       this._flushData(this._glContext, <WebGLUniformLocation>this._location);
     }
   }

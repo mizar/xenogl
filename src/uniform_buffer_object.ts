@@ -1,4 +1,4 @@
-import { UniformBuffer } from './buffer'
+import { UniformBuffer } from './buffer';
 import { FLOAT, STATIC_DRAW, UNIFORM_BUFFER } from './constants';
 import { Attribute, TypedArrayLike } from './variable';
 
@@ -15,14 +15,14 @@ export class UniformBufferObject {
   constructor(blockName: string, bufferOrBufferArgs: UniformBuffer | {
     dataOrLength?: TypedArrayLike | number | null,
     dataType?: number,
-    usage?: number
-  } = {dataOrLength: null, dataType: FLOAT, usage: STATIC_DRAW}) {
+    usage?: number,
+  } = { dataOrLength: null, dataType: FLOAT, usage: STATIC_DRAW }) {
     this._blockName = blockName;
     this._blockIndex = null;
     this._javascriptIndex = null;
     this._isInitialized = false;
 
-    if(bufferOrBufferArgs instanceof UniformBuffer) {
+    if (bufferOrBufferArgs instanceof UniformBuffer) {
       this._buffer = bufferOrBufferArgs;
     } else {
       this._buffer = new UniformBuffer(bufferOrBufferArgs);

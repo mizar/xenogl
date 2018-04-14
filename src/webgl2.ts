@@ -5,9 +5,9 @@ import { Texture } from './texture';
 
 export class WebGL2 {
   protected _context: WebGL2RenderingContext;
-  protected _programs: Array<Program | null>;
+  protected _programs: (Program | null)[];
   protected _activeProgram: Program | null;
-  protected _transformFeedbacks: Array<TransformFeedback | null>;
+  protected _transformFeedbacks: (TransformFeedback | null)[];
   protected _textures: Texture[];
   protected _activeTexture: Texture | null;
 
@@ -27,13 +27,13 @@ export class WebGL2 {
    * @returns {number} Program ID
    */
   addProgram(program: Program): number {
-    if(!program.isLinked) {
+    if (!program.isLinked) {
       program._link(this._context);
     }
 
     this._programs.push(program);
 
-    if(this._activeProgram === null) {
+    if (this._activeProgram === null) {
       this._activeProgram = program;
       this._context.useProgram(program.glProgram);
     }
@@ -58,7 +58,7 @@ export class WebGL2 {
     this._textures.push(texture);
     texture._init(this._context, id);
 
-    if(this._activeTexture === null) {
+    if (this._activeTexture === null) {
       texture.activate();
     }
   }
@@ -69,7 +69,7 @@ export class WebGL2 {
    * @param {Program} program
    */
   activateProgram(program: Program) {
-    if(program.id === null) {
+    if (program.id === null) {
       throw new Error(`This program is not added to WebGL2 yet. Add it by using addProgram method.`);
     } else {
       this.activateProgramByID(program.id);
@@ -82,11 +82,11 @@ export class WebGL2 {
    * @param {number} id
    */
   activateProgramByID(id: number): void {
-    if(id > this._programs.length) {
+    if (id > this._programs.length) {
       throw new Error(`ID ${id} does not exist.`);
     }
 
-    if(this._activeProgram !== null) {
+    if (this._activeProgram !== null) {
       this._activeProgram.deactivate();
     }
 
@@ -102,7 +102,7 @@ export class WebGL2 {
    * @param {Program} program
    */
   useProgram(program: Program) {
-    if(program.id === null) {
+    if (program.id === null) {
       throw new Error(`This program is not added to WebGL2 yet. Add it by using addProgram method.`);
     } else {
       this.useProgramByID(program.id);
@@ -114,7 +114,7 @@ export class WebGL2 {
    * @param {number} id
    */
   useProgramByID(id: number) {
-    if(id > this._programs.length) {
+    if (id > this._programs.length) {
       throw new Error(`ID ${id} does not exist.`);
     }
 
@@ -137,7 +137,7 @@ export class WebGL2 {
   }
 
   draw(mode: number, count: number | null = null): void {
-    if(this._activeProgram !== null) {
+    if (this._activeProgram !== null) {
       this._activeProgram.draw(mode, count);
     }
   }

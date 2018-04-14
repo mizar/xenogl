@@ -40,12 +40,15 @@ export abstract class BufferBase implements Buffer {
 
   protected _totalAttributesSize: number;
 
-  constructor(args: {
+  constructor(
+    args: {
       dataOrLength?: TypedArrayLike | number | null,
       attributes?: Attribute[],
       dataType?: number,
-      usage?: number
-  } = {dataOrLength: null, attributes: [], dataType: FLOAT, usage: STATIC_DRAW}, bufferType: number) {
+      usage?: number,
+    } = { dataOrLength: null, attributes: [], dataType: FLOAT, usage: STATIC_DRAW },
+    bufferType: number,
+  ) {
     this._glContext = null;
     this._glProgram = null;
     this._glBuffer = null;
@@ -65,7 +68,7 @@ export abstract class BufferBase implements Buffer {
     this._totalAttributesSize = this._attributes.reduce((prev, attr) => prev + attr.size, 0);
 
     this._data = null;
-    if(this._dataOrLength !== null) {
+    if (this._dataOrLength !== null) {
       this.bufferData(this._dataOrLength);
     }
   }
@@ -79,7 +82,7 @@ export abstract class BufferBase implements Buffer {
       this._dataOrLength = dataOrLength;
       context.bindBuffer(this._bufferType, buffer);
 
-      if(typeof dataOrLength === 'number') {
+      if (typeof dataOrLength === 'number') {
         const bytes = dataOrLength * <number>getBytesPerElementByGlType(this._dataType);
         context.bufferData(this._bufferType, bytes, this._usage);
       } else {
@@ -102,7 +105,7 @@ export abstract class BufferBase implements Buffer {
   }
 
   _flush(): void {
-    if(this._glContext !== null && this._glBuffer !== null) {
+    if (this._glContext !== null && this._glBuffer !== null) {
       this._flushData(this._glContext, this._glBuffer);
     }
   }
@@ -117,7 +120,7 @@ export abstract class BufferBase implements Buffer {
    */
   _initAttributes(context: WebGL2RenderingContext, program: WebGLProgram, attributes: Attribute[] | null = null): void {
     this._enabledAttributes = this._attributes;
-    if(attributes !== null) {
+    if (attributes !== null) {
       this._enabledAttributes = attributes;
     }
 
@@ -130,10 +133,10 @@ export abstract class BufferBase implements Buffer {
     const strideBytes = bytesPerElement * this._totalAttributesSize;
     let offsetBytes = 0;
 
-    for(let i = 0; i < this._attributes.length; i++) {
+    for (let i = 0; i < this._attributes.length; i += 1) {
       const attr = this._attributes[i];
       const location = <number>this._attributeToLocation.get(attr);
-      if(this._enabledAttributes.find((e) => e.equals(attr))) {
+      if (this._enabledAttributes.find((e: Attribute) => e.equals(attr))) {
         context.enableVertexAttribArray(location);
         context.vertexAttribPointer(
           location,
@@ -141,7 +144,7 @@ export abstract class BufferBase implements Buffer {
           this._dataType,
           false,
           strideBytes,
-          offsetBytes
+          offsetBytes,
         );
       }
 
@@ -150,18 +153,18 @@ export abstract class BufferBase implements Buffer {
   }
 
   _enableAttributes(): void {
-    if(this._glContext !== null) {
+    if (this._glContext !== null) {
       const context = <WebGL2RenderingContext>this._glContext;
       const program = <WebGLProgram>this._glProgram;
 
       context.bindBuffer(this.bufferType, this._glBuffer);
       this._initAttributes(context, program, this._enabledAttributes);
-      context.bindBuffer(this.bufferType, null)
+      context.bindBuffer(this.bufferType, null);
     }
   }
 
   _disableAttributes(): void {
-    if(this._glContext !== null) {
+    if (this._glContext !== null) {
       const context = <WebGL2RenderingContext>this._glContext;
 
       this._enabledAttributes.forEach((attr) => {
@@ -185,7 +188,7 @@ export abstract class BufferBase implements Buffer {
     const buffer = context.createBuffer();
     context.bindBuffer(this._bufferType, buffer);
 
-    if(program !== null) {
+    if (program !== null) {
       this._initAttributes(context, program, attributes);
     }
 
@@ -212,7 +215,7 @@ export abstract class BufferBase implements Buffer {
   _initOnce(context: WebGL2RenderingContext,
             program: WebGLProgram | null = null,
             attributes: Attribute[] | null = null): void {
-    if(!this.isInitialized) {
+    if (!this.isInitialized) {
       this._init(context, program, attributes);
     }
   }
@@ -227,13 +230,13 @@ export abstract class BufferBase implements Buffer {
    * @private
    */
   _createWebGLVertexArrayObject(context: WebGL2RenderingContext, program: WebGLProgram | null = null,
-                                       attributes: Attribute[] | null = null): WebGLVertexArrayObject {
+                                attributes: Attribute[] | null = null): WebGLVertexArrayObject {
     const buffer = this._glBuffer;
     const vao = <WebGLVertexArrayObject>context.createVertexArray();
     context.bindVertexArray(vao);
     context.bindBuffer(this._bufferType, buffer);
 
-    if(program !== null) {
+    if (program !== null) {
       this._initAttributes(context, program, attributes);
     }
 
@@ -270,11 +273,10 @@ export abstract class BufferBase implements Buffer {
    * @returns {number}
    */
   get dataCount(): number {
-    if(this.data !== null) {
+    if (this.data !== null) {
       return this.data.length / this._totalAttributesSize;
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   /**
@@ -316,11 +318,10 @@ export abstract class BufferBase implements Buffer {
    * @returns {WebGLBuffer}
    */
   get glBuffer(): WebGLBuffer {
-    if(this.isInitialized) {
+    if (this.isInitialized) {
       return <WebGLBuffer>this._glBuffer;
-    } else {
-      throw new Error('This buffer is not initialized yet.');
     }
+    throw new Error('This buffer is not initialized yet.');
   }
 }
 
@@ -332,8 +333,8 @@ export class ArrayBuffer extends BufferBase {
     dataOrLength?: TypedArrayLike | number | null,
     attributes?: Attribute[],
     dataType?: number,
-    usage?: number
-  } = {dataOrLength: null, attributes: [], dataType: FLOAT, usage: STATIC_DRAW}) {
+    usage?: number,
+  } = { dataOrLength: null, attributes: [], dataType: FLOAT, usage: STATIC_DRAW }) {
     super(args, ARRAY_BUFFER);
   }
 }
@@ -346,8 +347,8 @@ export class ElementArrayBuffer extends BufferBase {
     dataOrLength?: TypedArrayLike | number | null,
     attributes?: Attribute[],
     dataType?: number,
-    usage?: number
-  } = {dataOrLength: null, attributes: [], dataType: UNSIGNED_SHORT, usage: STATIC_DRAW}) {
+    usage?: number,
+  } = { dataOrLength: null, attributes: [], dataType: UNSIGNED_SHORT, usage: STATIC_DRAW }) {
     super(args, ELEMENT_ARRAY_BUFFER);
   }
 }
@@ -359,8 +360,8 @@ export class UniformBuffer extends BufferBase {
   constructor(args: {
     dataOrLength?: TypedArrayLike | number | null,
     dataType?: number,
-    usage?: number
-  } = {dataOrLength: null, dataType: UNSIGNED_SHORT, usage: STATIC_DRAW}) {
+    usage?: number,
+  } = { dataOrLength: null, dataType: UNSIGNED_SHORT, usage: STATIC_DRAW }) {
     super(args, UNIFORM_BUFFER);
   }
 }

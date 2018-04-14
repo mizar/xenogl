@@ -39,7 +39,7 @@ export class Texture2D extends TextureBase {
     format?: number,
     dataType?: number,
     width?: number,
-    height?: number
+    height?: number,
   } = {}) {
     super();
     this._source = dataSource;
@@ -73,7 +73,7 @@ export class Texture2D extends TextureBase {
     this._glTexture = context.createTexture();
     context.bindTexture(this._target, this._glTexture);
 
-    if(typeof this._width === 'undefined' || typeof this._height === 'undefined') {
+    if (typeof this._width === 'undefined' || typeof this._height === 'undefined') {
       context.texImage2D(this._target, this._mipmapLevel, this._internalFormat,
                          this._format, this._dataType, <TextureSource>this._source);
     } else {
@@ -88,7 +88,7 @@ export class Texture2D extends TextureBase {
   }
 
   _flush() {
-    if(this._glContext !== null) {
+    if (this._glContext !== null) {
       this._flushData(this._glContext);
       this._flushData = () => {};
     }
